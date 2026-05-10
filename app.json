@@ -1,29 +1,42 @@
 {
   "expo": {
-    "name": "lista-compras-app",
-    "slug": "lista-compras-app",
+    "name": "Mis Compritas",
+    "slug": "mis-compritas",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
     "newArchEnabled": true,
+
     "splash": {
-      "image": "./assets/splash-icon.png",
+      "image": "./assets/icon.png",
       "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
+      "backgroundColor": "#FFF8F8"
     },
+
     "ios": {
       "supportsTablet": true
     },
+
     "android": {
+      "package": "com.amali.miscompritas",
+
       "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon.png",
-        "backgroundColor": "#ffffff"
+        "foregroundImage": "./assets/icon.png",
+        "backgroundColor": "#FFF8F8"
       },
+
       "edgeToEdgeEnabled": true
     },
+
     "web": {
       "favicon": "./assets/favicon.png"
+    },
+
+    "extra": {
+      "eas": {
+        "projectId": "ff59978c-722c-43fb-a4c6-56890128bf60"
+      }
     }
   }
 }
