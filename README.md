@@ -49,9 +49,7 @@ AsyncStorage
 
 # Video DEMO
 
-Link YouTube:
-
-
+Link YouTube: https://youtube.com/shorts/24YNQR0od7w?si=qYcjplUv91tckxCf
 
 
 # Cómo ejecutar la app
