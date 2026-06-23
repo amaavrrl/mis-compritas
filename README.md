@@ -1,68 +1,130 @@
-## MIS COMPRITAS - App de lista de compras
+# MIS COMPRITAS - App de lista de compras
 
-La aplicación fue desarrollada en React Native utilizando Expo, aplicando los conceptos como componentes, hooks, navegación, almacenamiento local y diseño UX/UI. 
+La aplicacion fue desarrollada en React Native utilizando Expo, aplicando conceptos como componentes, hooks, navegacion, almacenamiento local, estado global, permisos del dispositivo y diseno UX/UI.
 
 El proyecto cuenta con:
 
 - Componentes reutilizables
-- Navegación entre pantallas
-- Autenticación local
+- Navegacion entre pantallas
+- Autenticacion local
 - Persistencia con AsyncStorage
-- CRUD básico de productos
-- Interfaz clara y simple de usar
+- Estado global con Zustand
+- CRUD de productos
+- Uso de camara, galeria, ubicacion, contactos y calendario
 
 
-# Funcionalidades implementadas:
+## Funcionalidades implementadas
 
-✅ Registro de usuario
+-Registro de usuario
 
-✅ Inicio de sesión
+-Inicio de sesion
 
-✅ Validación de usuario local
+-Validacion de usuario local
 
-✅ Persistencia de datos con AsyncStorage
+-Persistencia de datos con AsyncStorage
 
-✅ Agregar productos
+-Agregar productos
 
-✅ Mostrar lista de productos
+-Mostrar, editar y eliminar productos
 
-✅ Eliminar productos
+-Marcar productos como comprados
 
-✅ Marcar productos como comprados
+-Contador de progreso
 
-✅ Tachado visual de productos comprados
+-Navegacion entre pantallas con React Navigation
 
-✅ Contador de progreso
+-Componentes reutilizables
 
-✅ Navegación entre pantallas con React Navigation
+-Store global de productos con Zustand
 
-✅ Componente reutilizable (ProductItem)
+-Foto del producto usando camara o galeria
 
+-Ubicacion del comercio utilizando GPS o agregado manualmente
 
-# Tecnologías utilizadas:
-React Native
-Expo
-JavaScript
-React Navigation
-AsyncStorage
+-Apertura de la ubicacion en Google Maps
 
+-Compartir lista de compras pendientes por WhatsApp
 
-# Video DEMO
+-Creacion de evento en calendario "Dia de compra semanal"
 
-Link YouTube: https://youtube.com/shorts/24YNQR0od7w?si=qYcjplUv91tckxCf
+-Notificaciones locales
 
+-Tests con Jest y React Native Testing Library
 
-# Cómo ejecutar la app
+## Permisos utilizados
+
+La app solicita permisos para:
+
+- Camara
+- Galeria
+- Ubicacion
+- Contactos
+- Calendario
+- Notificaciones
+
+## Tecnologias utilizadas
+
+- React Native
+- Expo
+- JavaScript
+- React Navigation
+- AsyncStorage
+- Zustand
+- Expo Image Picker
+- Expo Location
+- Expo Contacts
+- Expo Calendar
+- Expo Notifications
+- Jest
+- React Native Testing Library
+
+## Tests
+
+El proyecto incluye 3 tests:
+
+ Test de componente reutilizable
+
+ Test de logica de negocio
+
+ Test del store global de Zustand
+
+Para ejecutarlos:
+
+```bash
+npm test
+```
+
+Tambien se puede ejecutar:
+
+```bash
+npm test -- --watchAll=false
+```
+
+## Video DEMO
+
+Link YouTube:
+
+https://youtube.com/shorts/tWJLzyrvXfE?si=P8blGm7eISiskecf
+
+## Como ejecutar la app
 
 1- Instalar dependencias:
 
+```bash
 npm install
+```
 
 2- Ejecutar el proyecto:
 
+```bash
 npx expo start
+```
 
-3-Abrir en el celular: Descargar la apicación Expo Go y escanear el código QR generado en la terminal.
+3- Abrir en el celular:
 
+Descargar la aplicacion Expo Go y escanear el codigo QR generado en la terminal.
 
+```bash
+npx expo start -c
+```
 

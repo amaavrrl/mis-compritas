@@ -1,71 +1,58 @@
-// Importa useState
-import { useState } from 'react';
+﻿import { useState } from 'react';
 
-// Importa AsyncStorage
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-// Importa componentes React Native
 import {
   View,
   Text,
   TextInput,
   TouchableOpacity,
-  StyleSheet,
-  Alert
+  StyleSheet
 } from 'react-native';
 
-// Pantalla Registro
+import { showPrettyAlert } from '../components/PrettyAlert';
+
 export default function RegisterScreen({ navigation }) {
 
-  // Estado usuario
   const [usuario, setUsuario] = useState('');
-
-  // Estado contraseña
   const [password, setPassword] = useState('');
 
-  // Función registrar usuario
   const registrarUsuario = async () => {
 
     try {
 
-      // Verifica campos vacíos
       if (usuario === '' || password === '') {
 
-        Alert.alert(
+        showPrettyAlert(
           'Error',
-          'Complete todos los campos'
+          'Completa todos los campos'
         );
 
         return;
       }
 
-      // Crea objeto usuario
       const nuevoUsuario = {
         usuario,
         password
       };
 
-      // Guarda usuario en AsyncStorage
       await AsyncStorage.setItem(
         'usuario',
         JSON.stringify(nuevoUsuario)
       );
 
-      // Mensaje éxito
-      Alert.alert(
-        'Bienvenida 🌸',
+      showPrettyAlert(
+        'Bienvenida',
         'Usuario registrado correctamente'
       );
 
-      // Navega al login
       navigation.navigate('Login');
 
     } catch (error) {
 
-      // Muestra error si algo falla
-      Alert.alert(
+      showPrettyAlert(
         'Error',
-        'Ocurrió un problema al guardar'
+        'Ocurrio un problema al guardar'
       );
 
       console.log(error);
@@ -76,20 +63,16 @@ export default function RegisterScreen({ navigation }) {
 
     <View style={styles.container}>
 
-      {/* Título principal */}
       <Text style={styles.titulo}>
-        Crear Cuenta 🌸
+        Crear Cuenta
       </Text>
 
-      {/* Subtítulo */}
       <Text style={styles.subtitulo}>
-        Guardá tus compritas favoritas
+        Guarda tus compritas favoritas
       </Text>
 
-      {/* Card */}
       <View style={styles.card}>
 
-        {/* Input usuario */}
         <TextInput
           style={styles.input}
           placeholder="Nuevo usuario"
@@ -98,17 +81,15 @@ export default function RegisterScreen({ navigation }) {
           onChangeText={setUsuario}
         />
 
-        {/* Input contraseña */}
         <TextInput
           style={styles.input}
-          placeholder="Nueva contraseña"
+          placeholder="Nueva contrasena"
           placeholderTextColor="#999"
           secureTextEntry={true}
           value={password}
           onChangeText={setPassword}
         />
 
-        {/* Botón registrarse */}
         <TouchableOpacity
           style={styles.boton}
           onPress={registrarUsuario}
@@ -120,7 +101,6 @@ export default function RegisterScreen({ navigation }) {
 
         </TouchableOpacity>
 
-        {/* Volver login */}
         <TouchableOpacity
           onPress={() =>
             navigation.navigate('Login')
@@ -139,7 +119,6 @@ export default function RegisterScreen({ navigation }) {
   );
 }
 
-// Estilos
 const styles = StyleSheet.create({
 
   container: {
@@ -168,11 +147,9 @@ const styles = StyleSheet.create({
     backgroundColor: '#FFFFFF',
     padding: 25,
     borderRadius: 25,
-
     shadowColor: '#000',
     shadowOpacity: 0.08,
     shadowRadius: 10,
-
     elevation: 5,
   },
 
@@ -180,24 +157,18 @@ const styles = StyleSheet.create({
     backgroundColor: '#FFF7F9',
     borderWidth: 1,
     borderColor: '#F8D7DF',
-
     padding: 15,
     borderRadius: 15,
-
     marginBottom: 15,
-
     fontSize: 16,
     color: '#4B4B4B',
   },
 
   boton: {
     backgroundColor: '#F29EB0',
-
     padding: 15,
     borderRadius: 15,
-
     alignItems: 'center',
-
     marginTop: 10,
   },
 
@@ -215,3 +186,4 @@ const styles = StyleSheet.create({
   },
 
 });
+

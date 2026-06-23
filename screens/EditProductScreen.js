@@ -1,7 +1,5 @@
 import { useState } from 'react';
 
-import { enviarNotificacion } from '../services/notifications';
-
 import { useProductStore } from '../store/productStore';
 
 import {
@@ -28,23 +26,28 @@ import {
 
 import { showPrettyAlert } from '../components/PrettyAlert';
 
-export default function AddProductScreen({ navigation }) {
+export default function EditProductScreen({ route, navigation }) {
 
-  const [producto, setProducto] = useState('');
+  const { indexProducto } = route.params;
 
-  const [imagenUri, setImagenUri] = useState(null);
+  const productoActual =
+    useProductStore((state) => state.productos[indexProducto]);
 
-  const [ubicacion, setUbicacion] = useState(null);
+  const actualizarProducto =
+    useProductStore((state) => state.actualizarProducto);
+
+  const [producto, setProducto] = useState(productoActual?.nombre || '');
+
+  const [imagenUri, setImagenUri] = useState(productoActual?.imagenUri || null);
+
+  const [ubicacion, setUbicacion] = useState(productoActual?.ubicacion || null);
 
   const [mostrarOpcionesUbicacion, setMostrarOpcionesUbicacion] = useState(false);
   const [mostrarUbicacionManual, setMostrarUbicacionManual] = useState(false);
-  const [direccionManual, setDireccionManual] = useState('');
+  const [direccionManual, setDireccionManual] = useState(productoActual?.ubicacion?.direccion || '');
   const [cargandoUbicacion, setCargandoUbicacion] = useState(false);
 
-  const agregarProductoStore =
-    useProductStore((state) => state.agregarProducto);
-
-  const agregarProducto = async () => {
+  const guardarCambios = async () => {
 
     if (producto === '') {
 
@@ -56,17 +59,18 @@ export default function AddProductScreen({ navigation }) {
       return;
     }
 
-    await agregarProductoStore({
-      nombre: producto,
-      imagenUri,
-      ubicacion,
-    });
-
-    await enviarNotificacion(producto);
+    await actualizarProducto(
+      indexProducto,
+      {
+        nombre: producto,
+        imagenUri,
+        ubicacion,
+      }
+    );
 
     showPrettyAlert(
       'Exito',
-      'Producto agregado!'
+      'Producto actualizado!'
     );
 
     navigation.goBack();
@@ -126,7 +130,7 @@ export default function AddProductScreen({ navigation }) {
 
     setMostrarOpcionesUbicacion(false);
     setMostrarUbicacionManual(false);
-    setDireccionManual('');
+    setDireccionManual(productoActual?.ubicacion?.direccion || '');
     setCargandoUbicacion(false);
   };
 
@@ -157,6 +161,20 @@ export default function AddProductScreen({ navigation }) {
     );
   };
 
+  if (!productoActual) {
+
+    return (
+
+      <View style={styles.containerError}>
+
+        <Text style={styles.errorTexto}>
+          Producto no encontrado
+        </Text>
+
+      </View>
+    );
+  }
+
   return (
 
     <ScrollView
@@ -166,18 +184,18 @@ export default function AddProductScreen({ navigation }) {
     >
 
       <Text style={styles.titulo}>
-        Nuevo producto
+        Editar producto
       </Text>
 
       <Text style={styles.subtitulo}>
-        Agrega algo a tu lista
+        Actualiza los datos
       </Text>
 
       <View style={styles.card}>
 
         <TextInput
           style={styles.input}
-          placeholder="Agregar producto"
+          placeholder="Nombre del producto"
           placeholderTextColor="#999"
           value={producto}
           onChangeText={setProducto}
@@ -224,24 +242,31 @@ export default function AddProductScreen({ navigation }) {
             ubicacion && styles.botonUbicacionGuardada,
           ]}
           onPress={manejarAgregarUbicacion}
-          disabled={Boolean(ubicacion)}
         >
 
           <Text style={styles.textoBotonUbicacion}>
             {ubicacion
-              ? 'Ubicacion guardada'
+              ? 'Cambiar ubicacion'
               : 'Agregar ubicacion'}
           </Text>
 
         </TouchableOpacity>
 
+        {ubicacion && (
+
+          <Text style={styles.ubicacionGuardada}>
+            Ubicacion guardada
+          </Text>
+
+        )}
+
         <TouchableOpacity
           style={styles.boton}
-          onPress={agregarProducto}
+          onPress={guardarCambios}
         >
 
           <Text style={styles.textoBoton}>
-            Guardar producto
+            Guardar cambios
           </Text>
 
         </TouchableOpacity>
@@ -249,7 +274,7 @@ export default function AddProductScreen({ navigation }) {
       </View>
 
       <Modal
-        visible={mostrarOpcionesUbicacion && !ubicacion}
+        visible={mostrarOpcionesUbicacion}
         transparent={true}
         animationType="fade"
         onRequestClose={manejarCancelarUbicacion}
@@ -260,7 +285,7 @@ export default function AddProductScreen({ navigation }) {
           <View style={styles.modalCard}>
 
             <Text style={styles.modalTitulo}>
-              Agregar ubicacion
+              Cambiar ubicacion
             </Text>
 
             <Text style={styles.modalTexto}>
@@ -370,6 +395,18 @@ const styles = StyleSheet.create({
     padding: 25,
   },
 
+  containerError: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#FFF1F4',
+  },
+
+  errorTexto: {
+    color: '#777',
+    fontSize: 16,
+  },
+
   titulo: {
     fontSize: 34,
     fontWeight: 'bold',
@@ -389,11 +426,9 @@ const styles = StyleSheet.create({
     backgroundColor: '#FFFFFF',
     padding: 25,
     borderRadius: 25,
-
     shadowColor: '#000',
     shadowOpacity: 0.08,
     shadowRadius: 10,
-
     elevation: 5,
   },
 
@@ -401,12 +436,9 @@ const styles = StyleSheet.create({
     backgroundColor: '#FFF7F9',
     borderWidth: 1,
     borderColor: '#F8D7DF',
-
     padding: 15,
     borderRadius: 15,
-
     marginBottom: 20,
-
     fontSize: 16,
     color: '#4B4B4B',
   },
@@ -439,6 +471,46 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     fontSize: 13,
     textAlign: 'center',
+  },
+
+  botonUbicacion: {
+    borderWidth: 1,
+    borderColor: '#F29EB0',
+    padding: 12,
+    borderRadius: 15,
+    alignItems: 'center',
+    marginBottom: 8,
+  },
+
+  botonUbicacionGuardada: {
+    backgroundColor: '#FFF7F9',
+  },
+
+  textoBotonUbicacion: {
+    color: '#F29EB0',
+    fontWeight: 'bold',
+    fontSize: 14,
+    textAlign: 'center',
+  },
+
+  ubicacionGuardada: {
+    color: '#777',
+    textAlign: 'center',
+    marginBottom: 20,
+    fontSize: 13,
+  },
+
+  boton: {
+    backgroundColor: '#F29EB0',
+    padding: 15,
+    borderRadius: 15,
+    alignItems: 'center',
+  },
+
+  textoBoton: {
+    color: '#fff',
+    fontWeight: 'bold',
+    fontSize: 16,
   },
 
   ubicacionManualContainer: {
@@ -518,41 +590,6 @@ const styles = StyleSheet.create({
     padding: 13,
     borderRadius: 15,
     alignItems: 'center',
-  },
-
-  botonUbicacion: {
-    borderWidth: 1,
-    borderColor: '#F29EB0',
-    padding: 12,
-    borderRadius: 15,
-    alignItems: 'center',
-    marginBottom: 20,
-  },
-
-  botonUbicacionGuardada: {
-    backgroundColor: '#FFF7F9',
-  },
-
-  textoBotonUbicacion: {
-    color: '#F29EB0',
-    fontWeight: 'bold',
-    fontSize: 14,
-    textAlign: 'center',
-  },
-
-  boton: {
-    backgroundColor: '#F29EB0',
-
-    padding: 15,
-    borderRadius: 15,
-
-    alignItems: 'center',
-  },
-
-  textoBoton: {
-    color: '#fff',
-    fontWeight: 'bold',
-    fontSize: 16,
   },
 
 });

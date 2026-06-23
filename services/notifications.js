@@ -1,6 +1,8 @@
 import * as Notifications from 'expo-notifications';
+import { Platform } from 'react-native';
 
-// Configuración handler
+import { showPrettyAlert } from '../components/PrettyAlert';
+
 Notifications.setNotificationHandler({
 
   handleNotification: async () => ({
@@ -14,39 +16,71 @@ Notifications.setNotificationHandler({
 
 });
 
-// Pedir permisos
 export async function pedirPermisos() {
 
-  const { status } =
-    await Notifications.requestPermissionsAsync();
+  if (Platform.OS === 'android') {
 
-  if (status !== 'granted') {
-
-    alert('Permiso denegado');
-
+    await Notifications.setNotificationChannelAsync(
+      'default',
+      {
+        name: 'Recordatorios',
+        importance: Notifications.AndroidImportance.MAX,
+      }
+    );
   }
+
+  const permisosActuales =
+    await Notifications.getPermissionsAsync();
+
+  let estadoFinal = permisosActuales.status;
+
+  if (estadoFinal !== 'granted') {
+
+    const nuevosPermisos =
+      await Notifications.requestPermissionsAsync();
+
+    estadoFinal = nuevosPermisos.status;
+  }
+
+  if (estadoFinal !== 'granted') {
+
+    showPrettyAlert(
+      'Permiso denegado',
+      'Para ver los recordatorios tenes que permitir las notificaciones.'
+    );
+
+    return false;
+  }
+
+  return true;
 }
 
-// Enviar notificación
-export async function enviarNotificacion() {
+export async function enviarNotificacion(nombreProducto) {
 
   try {
+
+    const tienePermiso = await pedirPermisos();
+
+    if (!tienePermiso) {
+      return;
+    }
 
     await Notifications.scheduleNotificationAsync({
 
       content: {
-        title: '🛒 Mis Compritas',
-        body: 'No te olvides de hacer tus compritas!',
+        title: 'Mis Compritas',
+        body: `Recordatorio: no te olvides de comprar ${nombreProducto}.`,
       },
 
       trigger: {
         type: Notifications.SchedulableTriggerInputTypes.TIME_INTERVAL,
         seconds: 5,
+        channelId: 'default',
       },
 
     });
 
-    console.log('Notificación programada');
+    console.log('Notificacion programada');
 
   } catch (error) {
 
@@ -54,3 +88,4 @@ export async function enviarNotificacion() {
 
   }
 }
+
